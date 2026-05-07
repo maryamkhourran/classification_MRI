@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block hero_title %}{{ bundle.class_label }}{% endblock %}
+{% block hero_subtitle %}{{ bundle.description }}{% endblock %}
+{% block hero_eyebrow_block %}{% endblock %}
+{% block hero_subtitle_block %}{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <div class="split-header">
+        <div>
+            <p class="panel-tag">K-Means</p>
+            <h2>Sous-environnement de la classe</h2>
+        </div>
+        <a class="button ghost" href="{{ url_for('method_page', method_name='kmeans') }}">Retour aux 4 classes</a>
+    </div>
+    <div class="meta-row">
+        <span>Classe selectionnee: <code>{{ bundle.class_name }}</code></span>
+        {% if bundle.accuracy is not none %}
+            <span class="badge">Accuracy globale: {{ "%.2f"|format(bundle.accuracy) }}%</span>
+        {% endif %}
+    </div>
+</section>
+
+<section class="gallery stage-gallery">
+    {% for sheet in bundle.sheets %}
+        <article class="panel image-panel">
+            <p class="panel-tag">{{ sheet.title }}</p>
+            <h2>{{ sheet.title }}</h2>
+            <img class="single-preview" loading="lazy" src="{{ url_for('static', filename=sheet.static_path) }}" alt="{{ sheet.title }}">
+        </article>
+    {% endfor %}
+</section>
+
+<section class="panel">
+    <p class="panel-tag">Courbes et nuages</p>
+    <h2>Figures globales liees au K-Means</h2>
+    <div class="gallery gallery-small">
+        {% for image in bundle.focus_images %}
+            <figure class="image-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

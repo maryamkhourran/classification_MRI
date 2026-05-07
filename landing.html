@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Brain MRI Lab | Welcome</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body class="landing-body">
+    <main class="landing-scene">
+        <div class="landing-frame"></div>
+        <div class="landing-frame-cut landing-frame-cut-top"></div>
+        <div class="landing-frame-cut landing-frame-cut-bottom"></div>
+        <a class="launch-button launch-button-top" href="{{ url_for('index') }}">
+            <span>DISCOVER</span>
+            <span class="launch-arrow">&laquo;&laquo;</span>
+        </a>
+        <div class="landing-grid"></div>
+        <div class="landing-overlay"></div>
+
+        <header class="landing-topbar">
+            <a class="landing-link" href="{{ url_for('learn') }}">LEARN</a>
+            <a class="landing-link" href="{{ url_for('data_page') }}">DATA</a>
+        </header>
+
+        <section class="landing-title-block">
+            <img
+                class="landing-title-logo"
+                src="{{ url_for('static', filename='img/landing-title-logo.png') }}"
+                alt="Brain MRI Lab">
+        </section>
+
+        <section class="landing-model-wrap">
+            <div class="landing-halo"></div>
+            <model-viewer
+                class="brain-model"
+                src="{{ url_for('static', filename='models/brain_point_cloud.glb') }}"
+                camera-controls
+                auto-rotate
+                rotation-per-second="18deg"
+                shadow-intensity="0"
+                exposure="0.9"
+                interaction-prompt="none"
+                disable-pan>
+            </model-viewer>
+        </section>
+    </main>
+
+</body>
+</html>

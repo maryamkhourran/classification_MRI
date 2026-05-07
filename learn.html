@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Neurovista | Learn</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body class="app-body learn-body learn-fullscreen-body">
+    <div class="app-frame"></div>
+    <div class="app-frame-cut app-frame-cut-top"></div>
+    <div class="app-frame-cut app-frame-cut-bottom"></div>
+    <a class="app-frame-pill" href="{{ url_for('landing') }}">
+        <span>Brain MRI Lab</span>
+    </a>
+    <main class="learn-fullscreen">
+        <section class="learn-diagnosis-nav">
+            <div class="learn-diagnosis-group learn-diagnosis-group-left">
+                <a class="learn-diagnosis-link" href="{{ url_for('diagnosis_page', diagnosis_slug='no_tumor') }}">No Tumor</a>
+                <a class="learn-diagnosis-link" href="{{ url_for('diagnosis_page', diagnosis_slug='glioma') }}">Glioma</a>
+            </div>
+            <div class="learn-diagnosis-group learn-diagnosis-group-right">
+                <a class="learn-diagnosis-link" href="{{ url_for('diagnosis_page', diagnosis_slug='meningioma') }}">Meningioma</a>
+                <a class="learn-diagnosis-link" href="{{ url_for('diagnosis_page', diagnosis_slug='pituitary') }}">Pituitary</a>
+            </div>
+        </section>
+        <section class="learn-poster-shell">
+            <img
+                class="learn-fullscreen-image"
+                src="{{ url_for('static', filename='img/brain-learn-reference.png') }}"
+                alt="Infographie du cerveau">
+        </section>
+
+        <section class="learn-3d-section">
+            <div class="learn-3d-shell">
+                <div class="learn-3d-copy">
+                    <span>3D BRAIN ANATOMY</span>
+                </div>
+                <model-viewer
+                    class="learn-3d-model"
+                    src="{{ url_for('static', filename='models/anatomy2_optimized.glb') }}"
+                    camera-controls
+                    shadow-intensity="0"
+                    exposure="1"
+                    disable-pan>
+                </model-viewer>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

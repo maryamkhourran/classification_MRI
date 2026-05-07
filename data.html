@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | Brain MRI Lab{% endblock %}
+{% block body_class %}data-body{% endblock %}
+{% block hero_title %}Image Processing Data{% endblock %}
+{% block hero_subtitle %}{{ bundle.description }}{% endblock %}
+{% block hero_eyebrow %}{% endblock %}
+{% block hero_subtitle_block %}{% endblock %}
+
+{% block content %}
+{% for sample in bundle.samples %}
+<section class="dashboard-hud method-hud">
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">SAMPLE MRI</span>
+            <span class="hud-status">DATA</span>
+        </div>
+        <ul class="clean-list compact">
+            <li>Classe <strong>{{ sample.sample_label }}</strong></li>
+            <li>Fichier <strong>{{ sample.sample_file }}</strong></li>
+            <li>Pipeline <strong>Pretraitement + segmentation + features</strong></li>
+        </ul>
+    </article>
+
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">FEATURE TABLE</span>
+            <span class="hud-status">READY</span>
+        </div>
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Valeur</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for feature in sample.features %}
+                    <tr>
+                        <td>{{ feature.name }}</td>
+                        <td>{{ feature.value }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">{{ sample.sample_label }}</span>
+        <span class="hud-status">STEP BY STEP</span>
+    </div>
+    {% set split_index = (sample.images|length + 1) // 2 %}
+    {% set left_images = sample.images[:split_index] %}
+    {% set right_images = sample.images[split_index:] %}
+    <div class="kmeans2-steps-layout">
+        <div class="kmeans2-steps-column">
+            {% for image in left_images %}
+            <figure class="image-card kmeans2-step-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+        <div class="kmeans2-steps-divider" aria-hidden="true"></div>
+        <div class="kmeans2-steps-column">
+            {% for image in right_images %}
+            <figure class="image-card kmeans2-step-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endfor %}
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">FINAL FEATURE DATASET</span>
+        <span class="hud-status">{{ bundle.feature_rows|length }} ROWS</span>
+    </div>
+    <p>Les cinq premieres lignes sont affichees ici. Utilise <strong>More</strong> pour voir tout le tableau des features extraites a partir des images etudiees.</p>
+    <div class="report-table">
+        <table>
+            <thead>
+                <tr>
+                    {% for column in bundle.feature_columns %}
+                    <th>{{ column.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in bundle.feature_rows[:5] %}
+                <tr>
+                    {% for column in bundle.feature_columns %}
+                    <td>{{ row[column.key] }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <details class="more-block">
+        <summary class="button ghost more-button">More</summary>
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        {% for column in bundle.feature_columns %}
+                        <th>{{ column.label }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in bundle.feature_rows %}
+                    <tr>
+                        {% for column in bundle.feature_columns %}
+                        <td>{{ row[column.key] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </details>
+</section>
+{% endblock %}

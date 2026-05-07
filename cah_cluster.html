@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block hero_title %}{{ bundle.cluster_label }}{% endblock %}
+{% block hero_subtitle %}{{ bundle.description }}{% endblock %}
+{% block hero_eyebrow_block %}{% endblock %}
+{% block hero_subtitle_block %}{% endblock %}
+
+{% block content %}
+<section class="dashboard-hud method-hud">
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">CAH CLUSTER</span>
+            <span class="hud-status">LIVE</span>
+        </div>
+        <ul class="clean-list compact">
+            <li>Cluster <strong>{{ bundle.cluster_label }}</strong></li>
+            <li>Clusters detectes <strong>{{ bundle.cluster_count }}</strong></li>
+            <li>Images <strong>{{ bundle.sample_count }}</strong></li>
+            <li>Classe dominante <strong>{{ bundle.mapped_class }}</strong></li>
+            <li>Purete globale <strong>{{ "%.2f"|format(bundle.purity) }}%</strong></li>
+        </ul>
+        <a class="button ghost" href="{{ url_for('method_page', method_name='cah') }}">Retour aux clusters CAH</a>
+    </article>
+
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">CLASS DISTRIBUTION</span>
+            <span class="hud-status">REAL LABELS</span>
+        </div>
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classe reelle</th>
+                        <th>Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in bundle.distribution %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">CLUSTER IMAGES</span>
+        <span class="hud-status">GALLERY</span>
+    </div>
+    <div class="gallery gallery-small">
+        {% for image in bundle.gallery_images %}
+            <figure class="image-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">GLOBAL CAH FIGURES</span>
+        <span class="hud-status">READY</span>
+    </div>
+    <div class="gallery gallery-small">
+        {% for image in bundle.focus_images %}
+            <figure class="image-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

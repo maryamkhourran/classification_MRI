@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil | Brain MRI Lab{% endblock %}
+{% block body_class %}dashboard-body{% endblock %}
+{% block page_shell_class %}dashboard-page-shell{% endblock %}
+{% block hero_title %}<span class="compact-page-title">Methodes De Classification</span>{% endblock %}
+{% block hero_eyebrow_block %}{% endblock %}
+{% block hero_subtitle_block %}{% endblock %}
+
+{% block content %}
+<section class="method-carousel-shell" aria-label="Methodes de classification">
+    <button class="carousel-arrow carousel-arrow-left" type="button" aria-label="Methode precedente" data-carousel-prev>&lsaquo;</button>
+    <div class="method-carousel-viewport">
+        <div class="method-carousel-track" data-carousel-track>
+            <article class="hud-card method-slide is-active" data-slide-index="0">
+                <div class="hud-card-header">
+                    <span class="hud-code">MODULE A-01</span>
+                    <span class="hud-status">ACTIVE</span>
+                </div>
+                <div class="hud-meta-list">
+                    <div><span>Function</span><strong>Classification + Segmentation</strong></div>
+                    <div><span>Mode</span><strong>4 classes</strong></div>
+                </div>
+                <p class="hud-copy">Pipeline complet du script original avec pretraitement, segmentation, nuages de points, evaluation et navigation par classe.</p>
+                <div class="hud-tags">
+                    {% for item in classes %}
+                        <span>{{ item }}</span>
+                    {% endfor %}
+                </div>
+                <a class="hud-action" href="{{ url_for('method_page', method_name='kmeans') }}">Ouvrir K-Means</a>
+            </article>
+
+            <article class="hud-card method-slide" data-slide-index="1">
+                <div class="hud-card-header">
+                    <span class="hud-code">MODULE B-02</span>
+                    <span class="hud-status">BINARY</span>
+                </div>
+                <div class="hud-meta-list">
+                    <div><span>Output</span><strong>Tumor / No Tumor</strong></div>
+                    <div><span>Mode</span><strong>Prediction upload</strong></div>
+                </div>
+                <p class="hud-copy">Variante binaire du K-Means pour determiner seulement la presence ou l'absence de tumeur, sans distinguer le type.</p>
+                <a class="hud-action" href="{{ url_for('method_page', method_name='kmeans2') }}">Ouvrir K-Means k=2</a>
+            </article>
+
+            <article class="hud-card method-slide" data-slide-index="2">
+                <div class="hud-card-header">
+                    <span class="hud-code">MODULE D-04</span>
+                    <span class="hud-status">TREE</span>
+                </div>
+                <div class="hud-meta-list">
+                    <div><span>Function</span><strong>Hierarchical clustering</strong></div>
+                    <div><span>Mode</span><strong>Dendrogram + Evaluation</strong></div>
+                </div>
+                <p class="hud-copy">Classification ascendante hierarchique avec dendrogramme, visualisation PCA, segmentation et galerie par cluster.</p>
+                <a class="hud-action" href="{{ url_for('method_page', method_name='cah') }}">Ouvrir CAH</a>
+            </article>
+        </div>
+    </div>
+    <button class="carousel-arrow carousel-arrow-right" type="button" aria-label="Methode suivante" data-carousel-next>&rsaquo;</button>
+
+    <div class="carousel-indicators" aria-hidden="true">
+        <span class="carousel-indicator is-active" data-indicator="0"></span>
+        <span class="carousel-indicator" data-indicator="1"></span>
+        <span class="carousel-indicator" data-indicator="2"></span>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(() => {
+    const slides = Array.from(document.querySelectorAll('[data-slide-index]'));
+    if (!slides.length) return;
+
+    const indicators = Array.from(document.querySelectorAll('[data-indicator]'));
+    let current = 0;
+
+    function render(direction = 'next') {
+        slides.forEach((slide, index) => {
+            slide.classList.remove('is-active', 'is-prev', 'is-next', 'is-hidden', 'slide-enter-from-right', 'slide-enter-from-left');
+            if (index === current) {
+                slide.classList.add('is-active');
+                slide.classList.add(direction === 'prev' ? 'slide-enter-from-left' : 'slide-enter-from-right');
+            } else if (index === (current - 1 + slides.length) % slides.length) {
+                slide.classList.add('is-prev');
+            } else if (index === (current + 1) % slides.length) {
+                slide.classList.add('is-next');
+            } else {
+                slide.classList.add('is-hidden');
+            }
+        });
+        indicators.forEach((dot, index) => {
+            dot.classList.toggle('is-active', index === current);
+        });
+    }
+
+    document.querySelector('[data-carousel-prev]')?.addEventListener('click', () => {
+        current = (current - 1 + slides.length) % slides.length;
+        render('prev');
+    });
+
+    document.querySelector('[data-carousel-next]')?.addEventListener('click', () => {
+        current = (current + 1) % slides.length;
+        render('next');
+    });
+
+    render('next');
+})();
+</script>
+{% endblock %}

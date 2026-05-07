@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Brain Tumor MRI Interface{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="app-body {% block body_class %}{% endblock %}">
+    <div class="app-frame"></div>
+    <div class="app-frame-cut app-frame-cut-top"></div>
+    <div class="app-frame-cut app-frame-cut-bottom"></div>
+    <a class="app-frame-pill" href="{{ url_for('landing') }}">
+        <span>Brain MRI Lab</span>
+    </a>
+    <div class="page-shell {% block page_shell_class %}{% endblock %}">
+        <header class="page-heading">
+            {% block hero_eyebrow_block %}
+            <p class="page-eyebrow">{% block hero_eyebrow %}Flask interface{% endblock %}</p>
+            {% endblock %}
+            <h1 class="page-title">{% block hero_title %}Traitement, segmentation et classification{% endblock %}</h1>
+            {% block hero_subtitle_block %}
+            <p class="page-subtitle">{% block hero_subtitle %}Une interface unique pour vos deux approches.{% endblock %}</p>
+            {% endblock %}
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <section class="flash-stack">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </section>
+            {% endif %}
+        {% endwith %}
+
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

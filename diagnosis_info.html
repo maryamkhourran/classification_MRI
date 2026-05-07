@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | Brain MRI Lab{% endblock %}
+{% block body_class %}diagnosis-body{% endblock %}
+{% block page_shell_class %}diagnosis-page-shell{% endblock %}
+{% block hero_eyebrow_block %}{% endblock %}
+{% block hero_subtitle_block %}{% endblock %}
+{% block hero_title %}<span class="compact-page-title">{{ page_title }}</span>{% endblock %}
+
+{% block content %}
+<section class="diagnosis-layout">
+    <article class="hud-card diagnosis-hero-card">
+        <div class="hud-card-header">
+            <span class="hud-code">{{ info.status }}</span>
+            <span class="hud-status">{{ info.badge }}</span>
+        </div>
+        <div class="diagnosis-hero-grid">
+            {% if info.image %}
+            <div class="image-card diagnosis-illustration-card">
+                <img src="{{ url_for('static', filename=info.image) }}" alt="{{ info.badge }}">
+            </div>
+            {% else %}
+            <div class="diagnosis-placeholder">
+                <span>Image placeholder</span>
+            </div>
+            {% endif %}
+            <div class="diagnosis-summary">
+                <h2>{{ info.heading }}</h2>
+                <p>{{ info.summary }}</p>
+            </div>
+        </div>
+    </article>
+
+    <section class="dashboard-hud diagnosis-stat-grid">
+        {% for stat in info.stats %}
+        <article class="hud-card diagnosis-stat-card">
+            <div class="hud-card-header">
+                <span class="hud-code">{{ stat.label }}</span>
+            </div>
+            <strong>{{ stat.value }}</strong>
+            <p>{{ stat.caption }}</p>
+        </article>
+        {% endfor %}
+    </section>
+
+    <article class="hud-card diagnosis-text-card">
+        <div class="hud-card-header">
+            <span class="hud-code">Ce que cela signifie</span>
+            <span class="hud-status">DETAIL</span>
+        </div>
+        {% for paragraph in info.meaning %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+    </article>
+
+    <section class="dashboard-hud diagnosis-split-grid">
+        <article class="hud-card diagnosis-text-card">
+            <div class="hud-card-header">
+                <span class="hud-code">Symptomes possibles</span>
+                <span class="hud-status">CLINIQUE</span>
+            </div>
+            {% for paragraph in info.symptoms %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
+        </article>
+
+        <article class="hud-card diagnosis-text-card">
+            <div class="hud-card-header">
+                <span class="hud-code">Options de traitement</span>
+                <span class="hud-status">CARE</span>
+            </div>
+            <div class="hud-tags diagnosis-treatment-tags">
+                {% for item in info.treatments %}
+                <span>{{ item }}</span>
+                {% endfor %}
+            </div>
+            {% if info.treatment_note %}
+            <p>{{ info.treatment_note }}</p>
+            {% endif %}
+        </article>
+    </section>
+
+    <article class="hud-card diagnosis-text-card">
+        <div class="hud-card-header">
+            <span class="hud-code">A retenir</span>
+            <span class="hud-status">GUIDE</span>
+        </div>
+        <ul class="clean-list note-list">
+            {% for item in info.takeaways %}
+            <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </article>
+</section>
+{% endblock %}

@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} | Brain MRI Lab{% endblock %}
+{% block hero_title %}{{ page_title }}{% endblock %}
+{% block hero_subtitle %}{{ bundle.description }}{% endblock %}
+{% block hero_eyebrow %}{% endblock %}
+{% block hero_subtitle_block %}{% endblock %}
+
+{% block content %}
+<section class="dashboard-hud method-hud">
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">CLASS MAP</span>
+            <span class="hud-status">LIVE</span>
+        </div>
+        <ul class="clean-list">
+            {% for item in classes %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    </article>
+</section>
+
+{% if method_name == "kmeans" %}
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">K-MEANS / K=4</span>
+        <span class="hud-status">ACTIVE</span>
+    </div>
+    {% if bundle.accuracy is not none %}
+    <div class="meta-row">
+        <span class="badge">Accuracy globale: {{ "%.2f"|format(bundle.accuracy) }}%</span>
+    </div>
+    {% endif %}
+    <div class="class-grid">
+        {% for class_name in classes %}
+            <a class="class-card" href="{{ url_for('kmeans_class_page', class_name=class_name) }}">
+                <span class="class-card-tag">Classe {{ loop.index }}</span>
+                <strong>{{ class_name }}</strong>
+                <span>Ouvrir les images et les resultats de cette classe</span>
+            </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">GLOBAL FIGURES</span>
+        <span class="hud-status">READY</span>
+    </div>
+    {% set split_index = (bundle.images|length + 1) // 2 %}
+    {% set left_images = bundle.images[:split_index] %}
+    {% set right_images = bundle.images[split_index:] %}
+    <div class="kmeans2-steps-layout">
+        <div class="kmeans2-steps-column">
+            {% for image in left_images %}
+            <figure class="image-card kmeans2-step-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+        <div class="kmeans2-steps-divider" aria-hidden="true"></div>
+        <div class="kmeans2-steps-column">
+            {% for image in right_images %}
+            <figure class="image-card kmeans2-step-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">CONSOLE LOG</span>
+        <span class="hud-status">RAW</span>
+    </div>
+    <pre class="console">{{ bundle.log_text }}</pre>
+</section>
+{% endif %}
+
+{% if method_name == "cah" %}
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">CAH TREE</span>
+        <span class="hud-status">ACTIVE</span>
+    </div>
+    <div class="meta-row">
+        {% if bundle.cluster_count %}
+        <span class="badge">Clusters detectes: {{ bundle.cluster_count }}</span>
+        {% endif %}
+        {% if bundle.purity_percent is not none %}
+        <span class="badge">Purete moyenne: {{ "%.2f"|format(bundle.purity_percent) }}%</span>
+        {% endif %}
+    </div>
+    {% if bundle.cluster_cards %}
+    <div class="class-grid">
+        {% for cluster in bundle.cluster_cards %}
+            <a class="class-card" href="{{ url_for('cah_cluster_page', cluster_id=cluster.cluster_id) }}">
+                <span class="class-card-tag">{{ cluster.label }}</span>
+                <strong>{{ cluster.count }} images</strong>
+                <span>Classe dominante: {{ cluster.mapped_class }}</span>
+            </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% set split_index = (bundle.images|length + 1) // 2 %}
+    {% set left_images = bundle.images[:split_index] %}
+    {% set right_images = bundle.images[split_index:] %}
+    <div class="kmeans2-steps-layout">
+        <div class="kmeans2-steps-column">
+            {% for image in left_images %}
+            <figure class="image-card kmeans2-step-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+        <div class="kmeans2-steps-divider" aria-hidden="true"></div>
+        <div class="kmeans2-steps-column">
+            {% for image in right_images %}
+            <figure class="image-card kmeans2-step-card">
+                <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                <figcaption>{{ image.title }}</figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">CONSOLE LOG</span>
+        <span class="hud-status">RAW</span>
+    </div>
+    <pre class="console">{{ bundle.log_text }}</pre>
+</section>
+{% endif %}
+
+{% if method_name == "kmeans2" %}
+<section class="hud-card method-block">
+    <div class="hud-card-header">
+        <span class="hud-code">K-MEANS / K=2</span>
+        <span class="hud-status">BINARY</span>
+    </div>
+    <div class="meta-row">
+        {% if bundle.accuracy is not none %}
+            <span class="badge">Accuracy globale: {{ "%.2f"|format(bundle.accuracy) }}%</span>
+        {% endif %}
+    </div>
+    <div class="class-grid binary-class-grid">
+        {% for item in bundle.binary_classes %}
+        <a class="class-card binary-class-card" href="{{ url_for('kmeans_binary_class_page', class_name=item.name) }}">
+            <span class="class-card-tag">{{ item.label }}</span>
+            <strong>{{ item.name }}</strong>
+            <span>Ouvrir la classe binaire</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% set split_index = (bundle.images|length + 1) // 2 %}
+    {% set left_images = bundle.images[:split_index] %}
+    {% set right_images = bundle.images[split_index:] %}
+    <div class="kmeans2-steps-layout">
+        <div class="kmeans2-steps-column">
+            {% for image in left_images %}
+                <figure class="image-card kmeans2-step-card">
+                    <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                    <figcaption>{{ image.title }}</figcaption>
+                </figure>
+            {% endfor %}
+        </div>
+        <div class="kmeans2-steps-divider" aria-hidden="true"></div>
+        <div class="kmeans2-steps-column">
+            {% for image in right_images %}
+                <figure class="image-card kmeans2-step-card">
+                    <img loading="lazy" src="{{ url_for('static', filename=image.static_path) }}" alt="{{ image.title }}">
+                    <figcaption>{{ image.title }}</figcaption>
+                </figure>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="dashboard-hud method-hud">
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">PREDICTION</span>
+            <span class="hud-status">UPLOAD</span>
+        </div>
+        <form class="upload-form" method="post" action="{{ url_for('kmeans2_predict') }}" enctype="multipart/form-data">
+            <label class="upload-box">
+                <span>Choisir une image</span>
+                <input type="file" name="image" accept=".png,.jpg,.jpeg,.bmp,.jfif,.webp" required>
+            </label>
+            <button class="button" type="submit">Predire tumeur / non tumeur</button>
+        </form>
+    </article>
+
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">CONSOLE LOG</span>
+            <span class="hud-status">RAW</span>
+        </div>
+        <pre class="console">{{ bundle.log_text }}</pre>
+    </article>
+</section>
+
+{% if prediction %}
+<section class="dashboard-hud method-hud">
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">DIAGNOSTIC</span>
+            <span class="hud-status">{{ prediction.predicted_class|upper }}</span>
+        </div>
+        {% if prediction.prediction_image %}
+        <img class="single-preview" src="{{ url_for('static', filename=prediction.prediction_image) }}" alt="Prediction K-Means k=2">
+        {% else %}
+        <img class="single-preview" src="{{ url_for('static', filename=prediction.uploaded_image) }}" alt="MRI upload">
+        {% endif %}
+        <p class="result-line">Classe predite: <strong>{{ prediction.predicted_class }}</strong></p>
+        <p class="result-line">Cluster assigne: <strong>{{ prediction.cluster_id }}</strong></p>
+    </article>
+
+    <article class="hud-card">
+        <div class="hud-card-header">
+            <span class="hud-code">CLUSTER SCORES</span>
+            <span class="hud-status">READY</span>
+        </div>
+        <ul class="clean-list compact">
+            {% for item in prediction.probabilities %}
+                <li>{{ item.class_name }} <strong>{{ item.percent }}%</strong></li>
+            {% endfor %}
+        </ul>
+        {% if prediction.chart_image %}
+        <img class="single-preview" src="{{ url_for('static', filename=prediction.chart_image) }}" alt="Cluster scores">
+        {% endif %}
+        <div class="report-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Classe</th>
+                        <th>Score</th>
+                        <th>Distance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in prediction.probabilities %}
+                        <tr>
+                            <td>{{ item.class_name }}</td>
+                            <td>{{ item.percent }}%</td>
+                            <td>{{ item.distance }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>
+{% endif %}
+{% endif %}
+
+{% endblock %}
